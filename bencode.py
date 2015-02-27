@@ -9,6 +9,18 @@ def decode_bencode(bdata):
     elif bdata[0] == 'l':
         split_list = bdata.split('e', 1)
         return decode_list(bdata[1:]), split_list[1]
+    elif bdata[0] == 'd':
+        split_list = bdata.split('e', 1)
+        # print bdata[1:]
+        return decode_dict(bdata[1:]), split_list[1]
+
+def decode_dict(bdict):
+    decoded_dict = {}
+    while bdict and bdict[0] != 'e':
+        bkey, bdict = decode_bencode(bdict)
+        bvalue, bdict = decode_bencode(bdict)
+        decoded_dict[bkey] = bvalue
+    return decoded_dict
 
 def decode_integer(bint):
     try:
@@ -22,7 +34,6 @@ def decode_list(blist):
     while blist and blist[0] != 'e':
         decoded_data = decode_bencode(blist)
         decoded_list.append(decoded_data[0])
-        print decoded_data
         blist = decoded_data[1]
     return decoded_list
 
