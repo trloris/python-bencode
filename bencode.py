@@ -35,7 +35,7 @@ def decode_integer(bint):
     bint = bint.split('e', 1)
     try:
         integer = int(bint[0])
-    except ValueError:
+    except ValueError:  # String can't be cast as integer
         raise BencodeException('Bad bencode at %s' % (bint))
     return integer, bint[1]
 
@@ -56,6 +56,7 @@ def decode_string(bstring):
     length = int(length)
     bdata = string[length:]
     string = string[:length]
+    # Length of string doesn't match the length encoded in bencoded string.
     if len(string) != length:
         raise BencodeException('Bad bencode at %s' % (bstring))
     return string, bdata
